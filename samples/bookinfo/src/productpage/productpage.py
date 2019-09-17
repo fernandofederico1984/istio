@@ -88,6 +88,7 @@ productpage = {
     "children": [details, reviews]
 }
 
+
 service_dict = {
     "productpage": productpage,
     "details": details,
@@ -259,6 +260,7 @@ def front():
     user = session.get('user', '')
     product = getProduct(product_id)
     detailsStatus, details = getProductDetails(product_id, headers)
+    pricesStatus, prices = getProductPrices(product_id, headers)
 
     if flood_factor > 0:
         floodReviews(product_id, headers)
@@ -268,6 +270,8 @@ def front():
         'productpage.html',
         detailsStatus=detailsStatus,
         reviewsStatus=reviewsStatus,
+        pricesStatus=pricesStatus,
+        prices=prices,
         product=product,
         details=details,
         reviews=reviews,
@@ -350,6 +354,17 @@ def getProductReviews(product_id, headers):
     status = res.status_code if res is not None and res.status_code else 500
     return status, {'error': 'Sorry, product reviews are currently unavailable for this book.'}
 
+def getProductPrices(product_id, headers):
+    for _ in range(2):
+        try:
+            url = "http://book-price-api.us-e2.qax.cloudhub.io/prices"
+            res = requests.get(url, headers=headers, timeout=3.0)
+        except BaseException:
+            res = None
+        if res and res.status_code == 200:
+            return 200, res.json()
+    status = res.status_code if res is not None and res.status_code else 500
+    return status, {'error': 'Sorry, product prices are currently unavailable for this book.'}
 
 def getProductRatings(product_id, headers):
     try:

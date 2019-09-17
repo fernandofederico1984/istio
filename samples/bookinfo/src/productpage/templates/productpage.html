@@ -154,6 +154,22 @@
       {% endif %}
       {% endif %}
     </div>
+    <div class="col-md-6">
+      {% if pricesStatus == 200: %}
+      <h4 class="text-center text-primary">Book Price</h4>
+      {% for price in prices.prices %}
+      <blockquote>
+        <p>{{ price.vendor }}</p>
+        <small>{{ price.price }}</small>
+      </blockquote>
+      {% endfor %}
+      {% else %}
+      <h4 class="text-center text-primary">Error fetching product prices!</h4>
+      {% if prices: %}
+      <p>{{ prices.error }}</p>
+      {% endif %}
+      {% endif %}
+    </div>
   </div>
 </div>
 {% endblock %}
